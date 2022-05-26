@@ -207,7 +207,7 @@ const Donations = () => {
 
       
       <div className="w-fll grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 mt-5 pb-5 mx-5">
-        {filterData.map(({_id, title, type, category, deadline, qte, image, userid}, idx) => {
+        {filterData.slice(0).reverse().map(({_id, title, type, category, deadline, qte, image, userid}, idx) => {
             let user  = users.find(({_id}) => _id === userid);
 
             return (

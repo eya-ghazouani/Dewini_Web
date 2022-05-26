@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import swal from 'sweetalert';
 import axios from 'axios'; 
+import moment from 'moment';
 
 import { useNavigate } from 'react-router-dom';
 import { path } from '../../utils/constants';
@@ -30,20 +31,24 @@ const customStyles = {
 
 const Medics = () => {
 
-  Modal.setAppElement('#root');
+    Modal.setAppElement('#root');
     const navigate = useNavigate();
     const [search, setSearch] = useState('');
     const [filterData, setfilterData] = useState([]);
     const [masterData, setmasterData] = useState([]);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [categories, setCategories] = useState([]);
 
     const [title, setTitle] = useState('');
     const [type, setType] = useState('');
+    const [form, setForm] = useState('');
     const [category, setCategory] = useState('');
     const [image, setImage] = useState(null);
     const [qte, setQte] = useState(1);
     const [date, setDate] = useState('');
+    const [dateIsValid, setDateIsValid] = useState(true);
     const [id, setId] = useState('');
+    const [isMedic, setIsMedic] = useState(true);
 
     const [action, setAction] = useState('add');
     //image related
@@ -67,18 +72,17 @@ const Medics = () => {
     }, [File]);
 
     const fetchdata = async () => {
-        const response = await axios.get(`${path}produit/`);
-        // console.log(response.status);
-        setfilterData(response.data.data);
-        setmasterData(response.data.data);
+      const response = await axios.get(`${path}produit/`);
+      setfilterData(response.data.data);
+      setmasterData(response.data.data);
+      const result = await axios.get(`${path}categorie/`);
+      setCategories(result.data.data);
     }
 
     useEffect(() => {
      fetchdata();
-     console.log(filterData);
+    //  console.log(filterData);
     }, []);
-
-    
 
     function openModal() {
       setIsOpen(true);
@@ -94,6 +98,7 @@ const Medics = () => {
       setTitle('');
       setType('');
       setCategory('');
+      setForm('');
       setDate('');
       setQte(1);
       setImage(null);
@@ -113,6 +118,13 @@ const Medics = () => {
         setCategory(e.target.value);
       } else if(e.target.name === 'date'){
         setDate(e.target.value);
+        let now = moment(new Date()).format('YYYY-MM-DD');
+        let days = moment(now).add(10, 'days')
+        // console.log(moment(days).isBefore(e.target.value));
+        // console.log(moment(now).isBefore(e.target.value));
+        setDateIsValid(moment(days).isBefore(e.target.value)); 
+      } else if (e.target.name === 'form') {
+        setForm(e.target.value);
       }
   
     }
@@ -127,6 +139,7 @@ const Medics = () => {
       setDate(item.deadline);
       setImage(item.image);
       setQte(item.qte);
+      setForm(item.form);
       setId(item._id);
       setAction('update');
   
@@ -165,7 +178,15 @@ const Medics = () => {
       
     const submit = async (e) => {
       e.preventDefault();
-        
+      if (!dateIsValid) {
+        swal(
+          "Error!",
+          'Check data',
+          "error"
+        );
+        // alert('data isnt vali');
+        return;
+      }
              
       const formData = new FormData();
       if(File) {
@@ -174,11 +195,12 @@ const Medics = () => {
       } 
       formData.append('type', type);
       formData.append('category', category);
+      formData.append('forme', form);
       formData.append('deadline', date);
       formData.append('title', title);
       formData.append('qte', qte);
       formData.append('status', 1);
-      formData.append('userid', '627f5387da034dd66648974a');
+      formData.append('userid', '627753f30d2788319144df4d');
       
 
 
@@ -186,34 +208,15 @@ const Medics = () => {
       let options, url, result;
       if(action === 'add') {
         url = `http://localhost:4000/produit/add`;
-        // options = {
-        //   method:"POST",
-        //   headers: {
-        //     Accept: "application/json",
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        //   body:formData
-        // }
+
         result = await axios.post(url, formData);
       } else {
         url = `http://localhost:4000/produit/${id}`;
-        // options = {
-        //   method: 'PATCH',
-        //   headers: {
-        //     Accept: "application/json",
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        //   body:formData
-          
-        // }
 
         result = await axios.patch(url, formData);
       }
       console.log(result );
-      // const response = await fetch(url, options );
-  
-      // let result = await response.json();
-      // console.log(result);
+     
       if (result.data.success === true) {
         swal(
           "Success!",
@@ -291,88 +294,89 @@ const Medics = () => {
     </div>
 
       
-    <div className="w-fll grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 mt-5 pb-5 mx-5">
-      {filterData.map(({_id, title, type, category, deadline, qte, image}, idx) => {
+    <div className="w-fll grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 mt-5 pb-5 mx-5">
+      {filterData.slice(0).reverse().map(({_id, title, type, category, deadline, qte, image}, idx) => {
+        let categor = categories.find(({_id}) => _id === category );
+        return (
+            <div key={idx} className=" rounded bg-white shadow p-2">
+                <div className="w-full flex justify-center">
+                    <img
+                        src={`http://localhost:4000/uploads/images/${image}`}
+                        className='w-auto h-48 rounded  '
+                        alt={title}
+                    />
+                </div>
+                <div className="w-full flex flex-row justify-between my-1">
+                    <p className='text-xl font-bold '>{title}</p>
+                    <p className='ml-2 text-sm  '>{qte}</p>
+                </div>
 
-          return (
-              <div key={idx} className=" rounded bg-white shadow p-2">
-                  <div className="w-full flex justify-center">
-                      <img
-                          src={`http://localhost:4000/uploads/images/${image}`}
-                          className='w-auto h-48 rounded  '
-                          alt='User avatar'
-                      />
-                  </div>
-                  <div className="w-full flex flex-row justify-between my-1">
-                      <p className='text-xl font-bold '>{title}</p>
-                      <p className='ml-2 text-sm  '>{qte}</p>
-                  </div>
+                <div className="w-full flex flex-row items-center my-1">
+                    <p className='ml-2 text-sm  '>{type}</p>
 
-                  <div className="w-full flex flex-row items-center my-1">
-                      <p className='ml-2 text-sm  '>{type}</p>
-
-                  </div>
+                </div>
+                {categor &&
                   <div className="w-full flex flex-row flex-wrap justify-between items-center my-1">
-                      <p className='ml-2 text-sm  '>{category}</p>
-
+                    <p className='ml-2 text-sm  '>{categor.nom}</p>
                   </div>
-                  <div className="w-full flex flex-row justify-end mb-1">
-                      <p className='ml-2 text-sm text-red-800 '>{deadline}</p>
+                }
+                <div className="w-full flex flex-row justify-end mb-1">
+                    <p className='ml-2 text-sm text-red-800 '>{deadline}</p>
 
-                  </div>
+                </div>
 
-                  <div className="w-full px-2 py-1">
-                      <div className="w-full border bg-gray-300" />
-                  </div>
+                <div className="w-full px-2 py-1">
+                    <div className="w-full border bg-gray-300" />
+                </div>
 
-                  <div className="w-full flex flex-row mt-1">
-                      <div className="w-1/2 flex justify-center">
-                          <button 
-                              className="relative w-fit inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
-                              onClick={() => update({_id, title, type, category, deadline, qte, date, image})}
-                          >
-                              <span className="relative  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-                                  Update
-                              </span>
-                          </button>
-                      </div>
-                      <div className="w-1/2 flex justify-center ">
-                      
+                <div className="w-full flex flex-row mt-1">
+                    <div className="w-1/2 flex justify-center">
+                        <button 
+                            className="relative w-fit inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+                            onClick={() => update({_id, title, type, category, deadline, qte, date, image})}
+                        >
+                            <span className="relative  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+                                Update
+                            </span>
+                        </button>
+                    </div>
+                    <div className="w-1/2 flex justify-center ">
+                    
 
-                          <button 
-                              className="relative inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white "
-                              // onClick={() => delete_medic(_id)}
-                              onClick={async() => {swal({
-                                  title: "Are you sure?",
-                                  text: "Once deleted, you will not be able to recover this Medicine!",
-                                  icon: "warning",
-                                  buttons: true,
-                                  dangerMode: true,
-                              })
-                              .then(async (willDelete) => {
-                                  if (willDelete) {
-                      
-                                      delete_medic(_id);
-                                  } else {
-                                  swal("Medicine is safe!");
-                                  }
-                              });
-                              
-                              }}
-                          >
-                              <span 
-                                  className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900  group-hover:bg-opacity-0"
-                                  
-                              >
-                                  Delete
-                              </span>
-                          </button>
-                      </div>
-                  </div>
+                        <button 
+                            className="relative inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white "
+                            // onClick={() => delete_medic(_id)}
+                            onClick={async() => {swal({
+                                title: "Are you sure?",
+                                text: "Once deleted, you will not be able to recover this Medicine!",
+                                icon: "warning",
+                                buttons: true,
+                                dangerMode: true,
+                            })
+                            .then(async (willDelete) => {
+                                if (willDelete) {
+                    
+                                    delete_medic(_id);
+                                } else {
+                                swal("Medicine is safe!");
+                                }
+                            });
+                            
+                            }}
+                        >
+                            <span 
+                                className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900  group-hover:bg-opacity-0"
+                                
+                            >
+                                Delete
+                            </span>
+                        </button>
+                    </div>
+                </div>
 
 
-              </div>
-          )
+            </div>
+        )
       })}
     </div>
           
@@ -386,7 +390,35 @@ const Medics = () => {
       <div className="w-full h-full overflow-auto">
         <form onSubmit={submit} >
                     
-          
+          <div className="w-full flex flex-row justify-evenly items-center mb-4">
+            <div className="w-fit flex items-center ">
+              <input 
+                checked={isMedic}
+                id="ismedic" 
+                type="radio" 
+                // value={isMedic} 
+                name='type_medic'
+                className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" 
+                // onChange={() => console.log('true')}
+                onChange={() => {setIsMedic(true); setType('Medicament')}}
+                />
+              <label htmlFor="ismedic" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Medicament</label>
+            </div>
+
+            <div className="w-fit flex items-center">
+              <input 
+                checked={!isMedic}
+                id="pamedic" 
+                type="radio" 
+                // value={!isMedic} 
+                name='type_medic'
+                className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" 
+                onChange={() => {setIsMedic(false); setType('Produit Paramedical')}}
+                // onChange={() => console.log('true')}
+              />
+              <label htmlFor="pamedic" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">roduit Paramedical</label>
+            </div>
+          </div>
           <div className="grid gap-6 mb-6 lg:grid-cols-2 items-end">
 
               <div className="w-full flex flex-row justify-between items-end">
@@ -399,6 +431,7 @@ const Medics = () => {
                           src={previewUrl}
                           // src={`https://i.pinimg.com/564x/22/7d/73/227d73d1ca2d45a6b4f196dc916b54a3.jpg`}
                           className='rounded w-full h-auto'
+                          alt='image'
                       />
                       </div>
                   : image ?
@@ -408,6 +441,7 @@ const Medics = () => {
                           // src={previewUrl}
                           src={`http://localhost:4000/uploads/images/${image}`}
                           className='rounded w-full h-auto'
+                          alt='image'
                           />
                       </div> 
                       : null 
@@ -470,64 +504,92 @@ const Medics = () => {
             </div>
             <div>
                 
-              <input 
-                type="text" 
-                id="category" 
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                placeholder="Category" 
-                name='category'
-                value={category}
-                onChange={(e) => onchange(e)}
-                required  
-              />
-            </div>
+                <select 
+                  className="form-select appearance-none
+                    block
+                    w-full
+                    px-3
+                    py-1.5
+                    text-base
+                    font-normal
+                    text-gray-900 
+                    text-sm
+                    dark:text-white
+                    bg-white bg-clip-padding bg-no-repeat
+                    border border-solid border-gray-300
+                    rounded
+                    transition
+                    ease-in-out
+                    m-0
+                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example"
+                    name='category'
+                    value={category}
+                    onChange={(e) => onchange(e)}
+                  >
+                    <option >Choisir Categorie</option>
+                    {categories.map(({_id, nom}, idx) => (
+                      <option key={idx} value={_id}>{nom}</option>
+                    ))}
+                </select>
+              </div>
 
-            <div>
-                
-              <select 
-                className="form-select appearance-none
-                  block
-                  w-full
-                  px-3
-                  py-1.5
-                  text-base
-                  font-normal
-                  text-gray-900 
-                  text-sm
-                  dark:text-white
-                  bg-white bg-clip-padding bg-no-repeat
-                  border border-solid border-gray-300
-                  rounded
-                  transition
-                  ease-in-out
-                  m-0
-                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example"
-                  name='type'
-                  value={type}
-                  onChange={(e) => onchange(e)}
-                >
-                  <option >Choisir Le type De Medics</option>
-                  <option value="type01">type01</option>
-                  <option value="type02">type02</option>
-                  <option value="type03">type03</option>
-              </select>
-            </div>
-        
-
-            <div>
-
-              <input 
-                type="date" 
-                id="email" 
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                placeholder="Date" 
-                name='date'
-                value={date}
-                onChange={(e) => onchange(e)}
-                required
+            {isMedic === true ? 
+              <>
+              <div>
                   
-              />
-            </div>
+                <select 
+                  className="form-select appearance-none
+                    block
+                    w-full
+                    px-3
+                    py-1.5
+                    text-base
+                    font-normal
+                    text-gray-900 
+                    text-sm
+                    dark:text-white
+                    bg-white bg-clip-padding bg-no-repeat
+                    border border-solid border-gray-300
+                    rounded
+                    transition
+                    ease-in-out
+                    m-0
+                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example"
+                    name='form'
+                    value={form}
+                    onChange={(e) => onchange(e)}
+                  >
+                    <option >Choisir Form</option>
+                    <option value="Paquet">Paquet</option>
+                    <option value="Comprime">Comprime</option>
+                    <option value="Tablette">Tablette</option>
+                    <option value="Sachet">Sachet</option>
+                    <option value="Tube">Tube</option>
+                    <option value="Ampoule">Ampoule</option>
+                    <option value="Injection">Injection</option>
+                </select>
+              </div>
+          
+
+              <div>
+
+                <input 
+                  type="date" 
+                  id="email" 
+                  className={`bg-gray-50 border ${dateIsValid ? 'border-gray-300' : 'border-red-600'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 `} 
+                  placeholder="Date" 
+                  name='date'
+                  value={date}
+                  onChange={(e) => onchange(e)}
+                  required
+                    
+                />
+                {dateIsValid ? null :
+                  <small className='text-sm text-red-600 font-medium m-0'>deadline invalid</small>
+                }
+              </div>
+            </>
+          : null }
           </div>
 
 

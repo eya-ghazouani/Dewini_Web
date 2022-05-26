@@ -174,7 +174,7 @@ const Users = () => {
         const formData = new FormData();
         if(File) {
             // formData.append("image", previewUrl);
-            formData.append("image", File);
+            formData.append("avatar", File);
         } 
         formData.append('nom', nom);
         formData.append('prenom', prenom);
@@ -222,7 +222,7 @@ const Users = () => {
         <div className="w-full px-4">
             <div className="w-full rounded bg-white shadow flex flex-row justify-between py-2 px-4">
                 <div className="flex flex-row">
-                    <p  className='text-lg font-semibold cursor-pointer mr-1' >Home  </p><p className='text-lg' >/ Users</p>
+                    <p  className='text-lg font-semibold cursor-pointer mr-1' >Dashboard  </p><p className='text-lg' >/ Users</p>
                 </div>
                 <div className='flex flex-row items-center'>
                     <div className=" relative">
@@ -245,34 +245,34 @@ const Users = () => {
             </div>
         </div>
 
-        <div className="w-full px-4 pt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {filterData.map(({nom, prenom, avatar, email, adresse, tel, _id}, idx) => {
+        <div className="w-full px-4 pt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {filterData.slice(0).reverse().map(({nom, prenom, avatar, email, adresse, tel, _id}, idx) => {
                 
                 return (
                     <div key={idx} className=" rounded bg-white shadow p-2">
                         <div className="w-full flex justify-center">
                             <img
                                 src={`http://localhost:4000/uploads/images/${avatar}`}
-                                className='w-auto h-52  rounded  '
+                                className='w-auto h-36  rounded  '
                                 alt='User avatar'
                             />
                         </div>
                         <div className="w-full flex justify-center my-1">
-                            <p className='text-xl font-bold '>{prenom} {nom}</p>
+                            <p className='text-lg font-bold '>{prenom} {nom}</p>
                         </div>
                         <div className="w-full flex flex-row items-center">
                             <MdOutlineEmail size={20} />
-                            <p className='ml-2 text-lg  '>{email}</p>
+                            <p className='ml-2 text-sm '>{email}</p>
 
                         </div>
                         <div className="w-full flex flex-row items-center">
                             <IoLocationOutline size={20} />
-                            <p className='ml-2 text-lg  '>{adresse}</p>
+                            <p className='ml-2 text-sm '>{adresse}</p>
 
                         </div>
                         <div className="w-full flex flex-row items-center">
                             <BiPhone size={20} />
-                            <p className='ml-2 text-lg '>{tel}</p>
+                            <p className='ml-2 text-sm '>{tel}</p>
 
                         </div>
 
@@ -283,45 +283,35 @@ const Users = () => {
                         <div className="w-full flex flex-row mt-1">
                             <div className="w-1/2 flex justify-center">
                                 <button 
-                                    className="relative w-fit inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+                                    type="button" 
+                                    className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded text-sm px-3 py-1 text-center mr-2 mb-2"
                                     onClick={() => update_user({nom, prenom, avatar, email, adresse, tel, _id})}
-                                >
-                                    <span className="relative  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-                                        Update
-                                    </span>
-                                </button>
+                                >Update</button>
+                                
                             </div>
                             <div className="w-1/2 flex justify-center ">
-                            {/* <button class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800" /> */}
+                            <button 
+                                type="button" 
+                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded text-sm px-3 py-1 text-center mr-2 mb-2"
+                                onClick={async() => {swal({
+                                    title: "Are you sure?",
+                                    text: "Once deleted, you will not be able to recover this User!",
+                                    icon: "warning",
+                                    buttons: true,
+                                    dangerMode: true,
+                                  })
+                                  .then(async (willDelete) => {
+                                    if (willDelete) {
+                        
+                                        delete_user(_id);
+                                    } else {
+                                      swal("User is safe!");
+                                    }
+                                  });
+                                
+                                }}
+                            >Delete</button>
 
-                                <button 
-                                    className="relative inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white "
-                                    // onClick={() => delete_user(_id)}
-                                    onClick={async() => {swal({
-                                        title: "Are you sure?",
-                                        text: "Once deleted, you will not be able to recover this User!",
-                                        icon: "warning",
-                                        buttons: true,
-                                        dangerMode: true,
-                                      })
-                                      .then(async (willDelete) => {
-                                        if (willDelete) {
-                            
-                                            delete_user(_id);
-                                        } else {
-                                          swal("User is safe!");
-                                        }
-                                      });
-                                    
-                                    }}
-                                >
-                                    <span 
-                                        className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900  group-hover:bg-opacity-0"
-                                        
-                                    >
-                                        Delete
-                                    </span>
-                                </button>
                             </div>
                         </div>
 

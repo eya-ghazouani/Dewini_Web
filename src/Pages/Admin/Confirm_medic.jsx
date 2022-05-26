@@ -91,10 +91,10 @@ const Confirm_medic = () => {
     }, [File]);
 
     const fetchdata = async () => {
-        const response = await axios.get(`${path}reservation`);
-        // console.log(response.data);
-        setfilterData(response.data.data);
-        setmasterData(response.data.data);
+      const response = await axios.get(`${path}reservation`);
+      // console.log(response.data);
+      setfilterData(response.data.data);
+      setmasterData(response.data.data);
     }
 
     useEffect(() => {

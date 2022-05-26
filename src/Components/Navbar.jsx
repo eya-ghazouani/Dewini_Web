@@ -22,10 +22,15 @@ const Navbar = () => {
 
         <div className='w-2/5 flex flex-row ' >
           <div className='w-2/5 flex justify-center items-center'>
-            <h1>LOGO</h1>
+          <img 
+            src={process.env.PUBLIC_URL + 'logo_eya.png'} 
+            alt='logo'
+            className='h-10 w-auto '
+          />
+            <h1 className='font-mono text-xl font-bold logo_font'>Dewini</h1>
           </div>
 
-          <div className='w-3/5 flex justify-end items-center'>
+          <div className='w-3/5 flex  items-center'>
             <div className=" w-5/6 relative">
               <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                   <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -40,14 +45,15 @@ const Navbar = () => {
           <div className='w-5/6 flex justify-end pr-5  space-x-4 items-center'>
             {isMobile ? null :
               <>
-                <Link className='font-semibold hover:text-blue-800' to='/'>Dashboard</Link>
-                <Link className='font-semibold hover:text-blue-800' to='/users'>Users</Link>
-                <Link className='font-semibold hover:text-blue-800' to='/medics'>Medics</Link>
-                <Link className='font-semibold hover:text-blue-800' to='/confirm'>Reservation</Link>
-                <Link className='font-semibold hover:text-blue-800' to='/donations'>Donations</Link>
+                <Link className='font-semibold hover:text-cyan-700' to='/'>Dashboard</Link>
+                <Link className='font-semibold hover:text-cyan-700' to='/users'>Users</Link>
+                <Link className='font-semibold hover:text-cyan-700' to='/categorie'>Categorie</Link>
+                <Link className='font-semibold hover:text-cyan-700' to='/medics'>Medics</Link>
+                <Link className='font-semibold hover:text-cyan-700' to='/confirm'>Reservation</Link>
+                <Link className='font-semibold hover:text-cyan-700' to='/donations'>Donations</Link>
               </>
             }
-            <div>
+            <div className='flex flex-row items-center'>
               <img
                 src='https://i.pinimg.com/750x/2b/6d/f0/2b6df004a324e4f303154d5e151753c7.jpg'
                 className='w-10 h-10 bg-blue-900 rounded-full ml-8  '

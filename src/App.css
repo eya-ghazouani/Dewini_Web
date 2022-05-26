@@ -3,3 +3,7 @@ body{
   padding: 0;
   background-color: #bdcef146;
 }
+.logo_font {
+  font-family: 'Permanent Marker', cursive;
+  color: #00AEA1;
+}
