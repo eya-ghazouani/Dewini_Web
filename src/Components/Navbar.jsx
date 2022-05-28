@@ -1,9 +1,11 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Menu, Transition } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react';
+import Cookies from 'universal-cookie';
 
+import { path } from '../utils/constants';
 import { CgMenu } from 'react-icons/cg';
 import { BsThreeDotsVertical, BsCardChecklist } from 'react-icons/bs';
 import { RiDashboardLine } from 'react-icons/ri';
@@ -14,7 +16,9 @@ import { AiOutlineMedicineBox } from 'react-icons/ai';
 const Navbar = () => {
 
   const theme = useTheme();
-
+  const navigate = useNavigate();
+  const cookies = new Cookies();
+  let user= cookies.get('user');
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // console.log(isMobile );
   return (
@@ -54,12 +58,24 @@ const Navbar = () => {
               </>
             }
             <div className='flex flex-row items-center'>
-              <img
-                src='https://i.pinimg.com/750x/2b/6d/f0/2b6df004a324e4f303154d5e151753c7.jpg'
-                className='w-10 h-10 bg-blue-900 rounded-full ml-8  '
-                alt='avatar'
-              />
+              {user &&
+                <img
+                  // src='https://i.pinimg.com/750x/2b/6d/f0/2b6df004a324e4f303154d5e151753c7.jpg'
+                  src={`${path}uploads/images/${user.avatar}` }
+                  className='w-10 h-10 bg-blue-900 rounded-full ml-8  '
+                  alt='avatar'
+                />
+              }
             </div>
+            <button 
+              type="button" 
+              class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded text-sm px-1 py-1text-center ml-2"
+              onClick={()=> {
+                cookies.remove('user');
+                navigate('/login');
+              }}
+            >Logout</button>
+
           </div>
         </div>
 

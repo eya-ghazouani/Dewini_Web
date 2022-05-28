@@ -134,9 +134,6 @@ const Confirm_medic = () => {
         openModal();
     }
   
-    
-
-
     const searchFilter = (text) => {
       if(text) {
         const NewData = masterData.filter((item) => {
@@ -168,12 +165,9 @@ const Confirm_medic = () => {
     };
 
       
-    const submit = async (status, id) => {
-
-        
-             
+    const submit = async (confirm, id) => {
       let url = `http://localhost:4000/reservation/reponse/${id}`;
-      let result = await axios.patch(url, {status: status});
+      let result = await axios.patch(url, {confirm: confirm});
       
       console.log(result);
 
@@ -221,16 +215,16 @@ const Confirm_medic = () => {
 
       
       <div className="w-fll grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 mt-5 pb-5 mx-5">
-        {filterData.map(({_id, id_produit, id_user, ord_image, qte, status}, idx) => {
-            let user  = users.find(({_id}) => _id === id_user);
-            let medic  = medics.find(({_id}) => _id === id_produit);
-            console.log(id_produit);
+        {filterData.map(({_id, idproduit, iduser, date_reserv, ordonnance, qte_reserv, confirm}, idx) => {
+            let user  = users.find(({_id}) => _id === iduser);
+            let medic  = medics.find(({_id}) => _id === idproduit);
+            // console.log(idproduit);
             return (
                 <div key={idx} className="w-full shadow rounded bg-white" >
 
                 <div className="w-auto h-52 rounded flex flex-wrap justify-center items-center">
                     <img 
-                    src={`${path}uploads/images/${ord_image}` } 
+                    src={`${path}uploads/images/${ordonnance}` } 
                     alt='image'
                     className='h-52 w-auto rounded'
                     />
@@ -258,70 +252,66 @@ const Confirm_medic = () => {
                                 <p className=' text-gray-900 font-semibold'>{medic.title}</p>
                                 {/* <p className='text-xs text-gray-500 flex-row mt-0'>{medic.code}</p> */}
                                 <div className="w-full flex flex-row justify-end">
-                                    <p className=' text-gray-700 text-xs mr-1'>{qte}</p>
+                                    <p className=' text-gray-700 text-xs mr-1'>{qte_reserv}</p>
                                     
                                 </div>
                                 
                             </div>
                         </div>
                     }
-                    <div className="w-full flex px-4">
-                        {status === 0 ?
-                            <p className="font-semibold text-gray-500">Waiting...</p>
-                        :
-                            <>
-                                {status === 1 ?
-                                    <p className="font-semibold text-green-800">Accepted</p>
-                                :
-                                    <p className="font-semibold text-red-800">Refused</p>
-                                }
-                            </>
-                        }
-                    </div>
-
-                
-                    {status !== 0 ? null :
-                    <>
-                        <div className="w-full flex justify-center">
-                            <div className='w-11/12 border border-gray-200'/>
-                        </div>
-                        {/* Editing :::::::::: */}
-                        <div className="w-full flex flex-row justify-between mt-2 items-center px-2">
-
-                            <button 
+                    <div className="w-full flex flex-col h-20 align-bottom">
+                        {confirm === null ?
+                          <>
+                            <p className="font-semibold text-gray-500 mx-4">Waiting...</p>
+                            <div className="w-full flex justify-center">
+                                <div className='w-11/12 border border-gray-200'/>
+                            </div>
+                            {/* Editing :::::::::: */}
+                            <div className="w-full flex flex-row justify-between mt-2 items-center px-2">
+    
+                              <button 
                                 className="w-1/2 relative inline-flex items-center justify-center  mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
                                 onClick={() => swal("Are u sure to accept this resservation ?")
                                                 .then((value) => {
                                                     if(value === true) {
-                                                        submit(1, _id);
+                                                        submit(true, _id);
                                                     }
                                                 })
                                 }
-                            >
+                              >
                                 <span className="w-full relative px-4 py-2 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
                                     Accept
                                 </span>
-                            </button>
-                        
-                            <button 
+                              </button>
+                            
+                              <button 
                                 className=" w-1/2 relative inline-flex items-center justify-center mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
-                                onClick={() => swal("Are u sure to accept this resservation ?")
-                                                .then((value) => {
-                                                    if(value === true) {
-                                                        submit(2, _id);
-                                                    }
-                                                })
-                }
-                            >
-                            <span className="w-full relative px-4 py-2 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-                            Decline
-                            </span>
-                        </button>
-                        
-                        </div>
-                    </> 
-                    }
-                {/* ///////////////////// */}
+                                onClick={() => swal("Are u sure to decline this resservation ?")
+                                                  .then((value) => {
+                                                      if(value === true) {
+                                                          submit(false, _id);
+                                                      }
+                                                  })
+                                }
+                              >
+                                <span className="w-full relative px-4 py-2 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+                                Decline
+                                </span>
+                              </button>
+                            
+                            </div>
+                          </> 
+                        :
+                          <>
+                            {confirm ?
+                              <p className="font-semibold text-green-800  mx-4 mt-10">Accepted</p>
+                            :
+                              <p className="font-semibold text-red-800  mx-4 mt-10">Refused</p>
+                            }
+                          </>
+                        }
+                    </div>
+
                 </div>
             )
         })}
