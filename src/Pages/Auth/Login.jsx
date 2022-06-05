@@ -49,14 +49,22 @@ const Login = () => {
         <title>Login</title>
       </head>
       <main className='flex flex-col items-center justify-center w-full flex-1 px-20 text-center'>
-         <div className='bg-white rounded-2xl shadow-2xl flex w-2/3 max-w-4xl'>
-              <div className='w-3/5 p-5'>
-                <div className='text-left font-bold'>
+         <div className='bg-white rounded-2xl shadow-2xl flex w-full sm:w-2/3 max-w-4xl'>
+
+              <div className='w-full sm:w-3/5 p-10 sm:p-5 flex items-center justify-center'>
+                {/* <div className='text-left font-bold'>
                   <span className='text-green-500'> Dewi</span>ni
+                </div> */}
+                <div className=''>
+                <div className="block sm:hidden w-full h-full flex flex-row justify-center items-center">
+                  <img 
+                    src={process.env.PUBLIC_URL + 'logo_eya.png'} 
+                    alt='logo'
+                    className='h-24 w-24 '
+                  />
                 </div>
-                <div className='py-10'>
-                <h2 className='text-3xl font-bold text-green-500 mb-2'>Connectez-vous </h2>
-                <div className='border-2 w-10 border-green-500 inline-block mb-2'></div>
+                <h2 className='text-3xl font-bold mb-2' style={{ color: '#06CCBB'}}>Connectez-vous </h2>
+                <div className='border-2 w-10 inline-block mb-2 ' style={{ borderColor: '#06CCBB'}} ></div>
                   <p className='text-gray-400 my-3'>Votre email compte</p>
                 <div className='flex flex-col items-center '>
                   <form onSubmit={submit}>
@@ -82,18 +90,29 @@ const Login = () => {
                         className='bg-gray-100 outline-none text-sm flex-1 '
                       />
                     </div>
-                    <button type='submit' className='border-2 mt-7 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold hover:bg-green-500 hover:text-white'>
+                    <button type='submit' className='border-2 mt-7 border-teal-400 text-teal-400 rounded-full px-12 py-2 inline-block font-semibold hover:bg-teal-400 hover:text-white'>
                       Connexion
                     </button>
                   </form>
                 </div>
               </div>
               </div>
-              <div className='w-2/5 bg-green-500 text-white rounded-tr-2xl rounded-br-2xl py-36 px-12'>
-                <h2 className='text-3xl font-bold mb-2'>Bienvenue...!</h2>
-                <div className='border-2 w-10 border-white inline-block mb-2'></div>
-                <p className='mb-8'>Remplissez vos informations personnelles et commencez à nous suivre...</p>
-                <a href="#" className='border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500'>S'inscrire</a>
+              <div className='hidden sm:block  w-2/5  text-white rounded-tr-2xl rounded-br-2xl py-20 px-12' style={{ backgroundColor: '#06CCBB'}}>
+                <div className="w-full h-full">
+                 <div className="w-full flex flex-row justify-center">
+                    <div className="w-44 h-44 rounded-full bg-white p-4 flex flex-row justify-center items-center">
+                      <img 
+                        src={process.env.PUBLIC_URL + 'logo_eya.png'} 
+                        alt='logo'
+                        className='h-full w-full '
+                      />
+                    </div>
+                  </div>
+                  <h2 className='text-3xl font-bold mb-2'>Bienvenue...!</h2>
+                  <div className='border-2 w-10 border-white inline-block mb-2'></div>
+                  <p className='mb-8'>Remplissez vos informations personnelles et commencez à nous suivre...</p>
+                </div>
+                {/* <a href="#" className='border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500'>S'inscrire</a> */}
               </div>
           </div>
       </main>

@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import swal from 'sweetalert';
 import axios from 'axios'; 
+// import Zoom from 'react-img-zoom'
 
 import { useNavigate, } from 'react-router-dom';
 import { path } from '../../utils/constants';
@@ -44,6 +45,8 @@ const Confirm_medic = () => {
     const [image, setImage] = useState(null);
     const [qte, setQte] = useState(1);
     const [id, setId] = useState('');
+    const [zoom, setZoom] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     //image related
     const [File, setFile] = useState();
     const [previewUrl, setPreviewUrl] = useState();
@@ -214,7 +217,7 @@ const Confirm_medic = () => {
       </div>
 
       
-      <div className="w-fll grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 mt-5 pb-5 mx-5">
+      <div className="w-fll grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5 pb-5 mx-5">
         {filterData.map(({_id, idproduit, iduser, date_reserv, ordonnance, qte_reserv, confirm}, idx) => {
             let user  = users.find(({_id}) => _id === iduser);
             let medic  = medics.find(({_id}) => _id === idproduit);
@@ -222,11 +225,19 @@ const Confirm_medic = () => {
             return (
                 <div key={idx} className="w-full shadow rounded bg-white" >
 
-                <div className="w-auto h-52 rounded flex flex-wrap justify-center items-center">
+                <div className="w-auto h-72 rounded flex flex-wrap justify-center items-center">
+                    
+                    {/* <Zoom
+                      img={`${path}uploads/images/${ordonnance}` }
+                      zoomScale={5}
+                      width={250}
+                      height={300}
+                    /> */}
                     <img 
-                    src={`${path}uploads/images/${ordonnance}` } 
-                    alt='image'
-                    className='h-52 w-auto rounded'
+                      src={`${path}uploads/images/${ordonnance}` } 
+                      alt='ordonnance'
+                      className='h-72 w-auto rounded cursor-pointer'
+                      onClick={()=> {setShowModal(true); setZoom(ordonnance)}}
                     />
                 </div>
                     {/* <User_info id={id_user} /> */}
@@ -244,7 +255,7 @@ const Confirm_medic = () => {
                             <div className="w-1/3 flex flex-wrap">
                                 <img 
                                     src={`${path}uploads/images/${medic.image}` } 
-                                    alt='image'
+                                    alt='medic_image'
                                     className='rounded'
                                 />
                             </div>
@@ -413,6 +424,42 @@ const Confirm_medic = () => {
         </div>
       </Modal>
       
+      {showModal ? (
+        <>
+          <div
+            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+          >
+            <div className="relative  mx-auto w-fit">
+              {/*content*/}
+              <div className="border-4 rounded-lg shadow-lg relative flex flex-col w-fit bg-white outline-none focus:outline-none">
+                
+                {/*body*/}
+                <div className="relative flex-auto" >
+                  <img 
+                    src={`${path}uploads/images/${zoom}` } 
+                    alt='ordonnance'
+                    className=' w-auto rounded cursor-pointer'
+                    style={{height: '80vh'}}
+                    onClick={()=> setShowModal(true)}
+                  />
+                </div>
+                {/*footer*/}
+                <div className="flex items-center justify-end px-4 border-t border-solid border-slate-200 rounded-b">
+                  <button
+                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={() => {setShowModal(false); setZoom(null)}}
+                  >
+                    Close
+                  </button>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+      ) : null}
       
     </div>
   )

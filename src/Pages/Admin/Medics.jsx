@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import swal from 'sweetalert';
 import axios from 'axios'; 
 import moment from 'moment';
+import Cookies from 'universal-cookie';
 
 import { useNavigate } from 'react-router-dom';
 import { path } from '../../utils/constants';
@@ -33,6 +34,8 @@ const Medics = () => {
 
     Modal.setAppElement('#root');
     const navigate = useNavigate();
+    const cookies = new Cookies();
+    let user = cookies.get('user');
     const [search, setSearch] = useState('');
     const [filterData, setfilterData] = useState([]);
     const [masterData, setmasterData] = useState([]);
@@ -200,7 +203,7 @@ const Medics = () => {
       formData.append('title', title);
       formData.append('qte', qte);
       formData.append('status', 1);
-      formData.append('userid', '627753f30d2788319144df4d');
+      formData.append('userid', user._id);
       
 
 
@@ -277,7 +280,7 @@ const Medics = () => {
                   <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                       <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                   </div>
-                  <input type="search" className="block p-1 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" 
+                  <input type="search" className="pl-10 w-full appearance-none block px-2 py-1 bg-gray-200 text-gray-700 border rounded focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Search" 
                   onChange={(e) => searchFilter(e.target.value)}
                   />
               
@@ -295,7 +298,7 @@ const Medics = () => {
 
       
     <div className="w-fll grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 mt-5 pb-5 mx-5">
-      {filterData.slice(0).reverse().map(({_id, title, type, category, deadline, qte, image}, idx) => {
+      {filterData.slice(0).reverse().map(({_id, title, type, category, deadline, qte, image, forme}, idx) => {
         let categor = categories.find(({_id}) => _id === category );
         return (
             <div key={idx} className=" rounded bg-white shadow p-2">
@@ -308,21 +311,29 @@ const Medics = () => {
                 </div>
                 <div className="w-full flex flex-row justify-between my-1">
                     <p className='text-xl font-bold '>{title}</p>
-                    <p className='ml-2 text-sm  '>{qte}</p>
+                    <div className="w-fit flex flex-row items-center space-x-2">
+                    <p className='ml-2 text-base font-semibold  '>{qte}</p>
+                    {forme &&
+                      <p className='ml-2 text-base font-semibold  '>{forme}(s)</p>
+                    }
+                    </div>
                 </div>
 
                 <div className="w-full flex flex-row items-center my-1">
-                    <p className='ml-2 text-sm  '>{type}</p>
+                    <p className='mx-2 text-sm font-semibold '>Type:</p>
+                    <p className='text-sm  '>{type}</p>
 
                 </div>
                 {categor &&
-                  <div className="w-full flex flex-row flex-wrap justify-between items-center my-1">
+                  <div className="w-full flex flex-row items-center my-1">
+                    <p className='mx-2 text-sm font-semibold '>Categorie:</p>
                     <p className='ml-2 text-sm  '>{categor.nom}</p>
                   </div>
                 }
-                <div className="w-full flex flex-row justify-end mb-1">
+                <div className="w-full h-6 flex flex-row justify-end mb-1">
+                  {deadline &&
                     <p className='ml-2 text-sm text-red-800 '>{deadline}</p>
-
+                  }
                 </div>
 
                 <div className="w-full px-2 py-1">

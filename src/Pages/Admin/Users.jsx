@@ -37,9 +37,11 @@ const Users = () => {
     const [filterData, setfilterData] = useState([]);
     const [masterData, setmasterData] = useState([]);
     const [nom, setNom] = useState('');
+    const [isNomWrong, setIsNomWrong] = useState(false);
     const [prenom, setPrenom] = useState('');
     const [email, setEmail] = useState('');
     const [tel, setTel] = useState('');
+    const [isTelWrong, setIsTelWrong] = useState(false);
     const [adresse, setAdresse] = useState('');
     const [image, setImage] = useState(null)
     const [action, setAction] = useState('add');
@@ -142,12 +144,23 @@ const Users = () => {
 
         if (e.target.name === 'nom') {
             setNom(e.target.value);
+            if(e.target.value.length < 3) {
+                setIsNomWrong(true);
+            } else {
+                setIsNomWrong(false);
+            }
         } else if (e.target.name === 'prenom') {
             setPrenom(e.target.value);
         } else if (e.target.name === 'adresse') {
             setAdresse(e.target.value);
         } else if (e.target.name === 'tel') {
             setTel(e.target.value);
+            if(e.target.value.length === 8) {
+                console.log(e.target.value)
+                setIsTelWrong(false);
+            } else {
+                setIsTelWrong(true);
+            }
         } else if (e.target.name === 'email') {
             setEmail(e.target.value);
         }
@@ -229,7 +242,7 @@ const Users = () => {
                         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                             <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
-                        <input type="search" className="block p-1 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" 
+                        <input type="search" className="pl-10 w-full appearance-none block px-2 py-1 bg-gray-200 text-gray-700 border rounded focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Search" 
                         onChange={(e) => searchFilter(e.target.value)}
                         />
                     
@@ -399,9 +412,12 @@ const Users = () => {
                             placeholder="Nom" 
                             value={nom}
                             onChange={(e) => onchange(e)}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 m-0" 
                             required  
                         />
+                        {isNomWrong ?
+                            <small className=" text-red-600 m-0 p-0" style={{fontSize: 12}}>Name must contain at lest 3 caracteres</small>
+                        : null }
                     </div>
                      
                     <div>
@@ -447,6 +463,9 @@ const Users = () => {
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                             required  
                         />
+                        {isTelWrong ?
+                            <small className=" text-red-600 m-0 p-0" style={{fontSize: 12}}>Phone number must be composed of 8 numbers</small>
+                        : null }
                     </div>
 
 
