@@ -38,6 +38,8 @@ const Users = () => {
     const [masterData, setmasterData] = useState([]);
     const [nom, setNom] = useState('');
     const [isNomWrong, setIsNomWrong] = useState(false);
+    const [isPrenWrong, setIsPrenWrong] = useState(false);
+    const [isAdrWrong, setIsAdrWrong] = useState(false);
     const [prenom, setPrenom] = useState('');
     const [email, setEmail] = useState('');
     const [tel, setTel] = useState('');
@@ -151,8 +153,18 @@ const Users = () => {
             }
         } else if (e.target.name === 'prenom') {
             setPrenom(e.target.value);
+            if(e.target.value.length < 3) {
+                setIsPrenWrong(true);
+            } else {
+                setIsPrenWrong(false);
+            }
         } else if (e.target.name === 'adresse') {
             setAdresse(e.target.value);
+            if(e.target.value.length < 3) {
+                setIsAdrWrong(true);
+            } else {
+                setIsAdrWrong(false);
+            }
         } else if (e.target.name === 'tel') {
             setTel(e.target.value);
             if(e.target.value.length === 8) {
@@ -189,12 +201,52 @@ const Users = () => {
             // formData.append("image", previewUrl);
             formData.append("avatar", File);
         } 
-        formData.append('nom', nom);
+        if(isNomWrong){
+            swal(
+                "Erreur!",
+                'Le nom doit etre supérieur à 3 caractères ',
+                "error"
+              );
+              // alert('data isnt vali');
+              return;
+        }else{
+            formData.append('nom', nom);
+        }
+        if(isPrenWrong){
+            swal(
+                "Erreur!",
+                'Le prénom doit etre supérieur à 3 caractères ',
+                "error"
+              );
+              // alert('data isnt vali');
+              return;
+        }else{
         formData.append('prenom', prenom);
+        }
+        
         formData.append('email', email);
+        if(isTelWrong){
+            swal(
+                "Erreur!",
+                'Le numéro de téléphone doit composé de 8 chiffres ',
+                "error"
+              );
+              // alert('data isnt vali');
+              return;
+        }else{
         formData.append('tel', tel);
+        }
+        if(isAdrWrong){
+            swal(
+                "Erreur!",
+                "L'adresse doit etre supérieur à 3 caractères ",
+                "error"
+              );
+              // alert('data isnt vali');
+              return;
+        }else{
         formData.append('adresse', adresse);
-
+        }
         let url, result;
         
         if(action === 'add'){
@@ -206,11 +258,11 @@ const Users = () => {
         }
 
         if (result.data.success === true) {
-            swal("Success!", result.data.message, "success");
+            swal("Succès!", result.data.message, "success");
             fetchData();
             closeModal();
         } else {
-            swal("Error!", result.data.message, "warning");
+            swal("Erreur!", result.data.message, "warning");
         }
 
     }
@@ -220,7 +272,7 @@ const Users = () => {
         const result = await axios.delete(`http://localhost:4000/user/${id}`);
                             
         if (result.data.success === true) {
-            swal("Poof! User has been deleted!", {
+            swal("Poof! Utilisateur supprimé avec succés!", {
                 icon: "success",
             });
             fetchData();
@@ -235,14 +287,14 @@ const Users = () => {
         <div className="w-full px-4">
             <div className="w-full rounded bg-white shadow flex flex-row justify-between py-2 px-4">
                 <div className="flex flex-row">
-                    <p  className='text-lg font-semibold cursor-pointer mr-1' >Dashboard  </p><p className='text-lg' >/ Users</p>
+                   <p className='text-lg' >/Utilisateurs</p>
                 </div>
                 <div className='flex flex-row items-center'>
                     <div className=" relative">
                         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                             <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
-                        <input type="search" className="pl-10 w-full appearance-none block px-2 py-1 bg-gray-200 text-gray-700 border rounded focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Search" 
+                        <input type="search" className="pl-10 w-full appearance-none block px-2 py-1 bg-gray-200 text-gray-700 border rounded focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Chercher..." 
                         onChange={(e) => searchFilter(e.target.value)}
                         />
                     
@@ -251,7 +303,7 @@ const Users = () => {
                     onClick={openModal}
                     >
                         <span className="relative px-2 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                            Add User
+                            Ajouter utilisateur
                         </span>
                     </button>
                 </div>
@@ -299,7 +351,7 @@ const Users = () => {
                                     type="button" 
                                     className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded text-sm px-3 py-1 text-center mr-2 mb-2"
                                     onClick={() => update_user({nom, prenom, avatar, email, adresse, tel, _id})}
-                                >Update</button>
+                                >Modifier</button>
                                 
                             </div>
                             <div className="w-1/2 flex justify-center ">
@@ -307,8 +359,8 @@ const Users = () => {
                                 type="button" 
                                 className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded text-sm px-3 py-1 text-center mr-2 mb-2"
                                 onClick={async() => {swal({
-                                    title: "Are you sure?",
-                                    text: "Once deleted, you will not be able to recover this User!",
+                                    title: "Vous etes sur?",
+                                    text: "Une fois supprimé vous ne pouvez plus récupérer cet utilisateur !",
                                     icon: "warning",
                                     buttons: true,
                                     dangerMode: true,
@@ -318,12 +370,12 @@ const Users = () => {
                         
                                         delete_user(_id);
                                     } else {
-                                      swal("User is safe!");
+                                      swal("Utilisateur enregistré");
                                     }
                                   });
                                 
                                 }}
-                            >Delete</button>
+                            >Supprimer</button>
 
                             </div>
                         </div>
@@ -416,7 +468,7 @@ const Users = () => {
                             required  
                         />
                         {isNomWrong ?
-                            <small className=" text-red-600 m-0 p-0" style={{fontSize: 12}}>Name must contain at lest 3 caracteres</small>
+                            <small className=" text-red-600 m-0 p-0" style={{fontSize: 12}}>Le nom doit etre supérieur à 3 caractères</small>
                         : null }
                     </div>
                      
@@ -432,6 +484,9 @@ const Users = () => {
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                             required  
                         />
+                        {isPrenWrong ?
+                            <small className=" text-red-600 m-0 p-0" style={{fontSize: 12}}>Le prénom doit etre supérieur à 3 caractères</small>
+                        : null }
                     </div>
                     
                     
@@ -447,6 +502,9 @@ const Users = () => {
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                             required  
                         />
+                        {isAdrWrong ?
+                            <small className=" text-red-600 m-0 p-0" style={{fontSize: 12}}>L'adresse doit etre supérieur à 3 caractères</small>
+                        : null }
                     </div>
                     
                     
@@ -456,7 +514,7 @@ const Users = () => {
                         <input  
                             type="number" 
                             id="tel" 
-                            placeholder="Phone number" 
+                            placeholder="Numéro de téléphone" 
                             name='tel' 
                             value={tel}
                             onChange={(e) => onchange(e)}
@@ -479,7 +537,7 @@ const Users = () => {
                     // onClick={Submit}
                     >
                         <span className="relative px-2 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded group-hover:bg-opacity-0">
-                            Submit
+                            Enregistrer
                         </span>
                     </button>
                 </div>
