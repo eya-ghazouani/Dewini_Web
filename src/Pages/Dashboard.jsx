@@ -2,10 +2,11 @@ import React, {useState , useEffect} from 'react';
 import axios from 'axios';
 
 import { FiUsers } from 'react-icons/fi';
-import { FaHandHoldingMedical, FaPills } from 'react-icons/fa';
+import { FaHandHoldingMedical, FaPills, FaUserFriends,FaBriefcaseMedical} from 'react-icons/fa';
 import { RiHandHeartLine } from 'react-icons/ri';
 import { BsBasket } from 'react-icons/bs';
-
+import {HiOutlineShoppingCart} from 'react-icons/hi'
+import {GoChecklist} from 'react-icons/go'
 import Linechart from '../Components/Linechart';
 import Maps from '../Components/Maps';
 
@@ -45,7 +46,7 @@ const Dashboard = () => {
         <p className="text-xl font-bold text-gray-600">Les utilisateurs</p>
         <div className="w-full flex flex-row justify-between mt-4 px-4 ">
           <p className="text-xl font-bold text-gray-600">{stats.users}</p>
-          <FiUsers className='text-gray-600' size={35} />
+          <FaUserFriends className='text-gray-600' size={35} />
         </div>
 
       </div>
@@ -55,24 +56,24 @@ const Dashboard = () => {
         <p className="text-xl font-bold text-gray-600">Les dons</p>
         <div className="w-full flex flex-row justify-between mt-4 px-4 ">
           <p className="text-xl font-bold text-gray-600">35</p>
-          <RiHandHeartLine className='text-gray-600' size={35} />
+          <FaHandHoldingMedical className='text-gray-600' size={35} />
         </div>
 
       </div>
       
       
       <div className="w-full p-4 bg-white shadow-xl rounded-lg ">
-        <p className="text-xl font-bold text-gray-600">Les reservations</p>
+        <p className="text-xl font-bold text-gray-600">Les réservations</p>
         <div className="w-full flex flex-row justify-between mt-4 px-4 ">
           <p className="text-xl font-bold text-gray-600">{stats.reservs}</p>
-          <BsBasket className='text-gray-600' size={35} />
+          <GoChecklist className='text-gray-600' size={35} />
         </div>
 
       </div>
       
       
       <div className="w-full p-4 bg-white shadow-xl rounded-lg ">
-        <p className="text-xl font-bold text-gray-600">Les medicaments</p>
+        <p className="text-xl font-bold text-gray-600">Les médicaments</p>
         <div className="w-full flex flex-row justify-between mt-4 px-4 ">
           <p className="text-xl font-bold text-gray-600">{stats.medics}</p>
           <FaPills className='text-gray-600'  size={35} />
@@ -82,10 +83,10 @@ const Dashboard = () => {
       
       
       <div className="w-full p-4 bg-white shadow-xl rounded-lg ">
-        <p className="text-xl font-bold text-gray-600">Les paramedicals</p>
+        <p className="text-xl font-bold text-gray-600">Les produits paramédicaux</p>
         <div className="w-full flex flex-row justify-between mt-4 px-4 ">
           <p className="text-xl font-bold text-gray-600">{stats.paramedics}</p>
-          <FaPills className='text-gray-600'  size={35} />
+          <FaBriefcaseMedical className='text-gray-600'  size={35} />
         </div>
 
       </div>

@@ -8,13 +8,8 @@ import Cookies from 'universal-cookie';
 
 import { useNavigate } from 'react-router-dom';
 import { path } from '../../utils/constants';
-import { ImBarcode } from 'react-icons/im';
-import { BiSearchAlt2 } from 'react-icons/bi';
 import { TiMinus } from 'react-icons/ti';
-import { IoEyedropSharp } from 'react-icons/io5';
-import { RiMedicineBottleLine } from 'react-icons/ri';
 import { BsPlusLg } from 'react-icons/bs';
-import { FaBarcoden, FaPills } from 'react-icons/fa';
 
 
 const customStyles = {
@@ -43,7 +38,7 @@ const Medics = () => {
     const [categories, setCategories] = useState([]);
 
     const [title, setTitle] = useState('');
-    const [type, setType] = useState('');
+    const [type, setType] = useState('Medicament');
     const [form, setForm] = useState('');
     const [category, setCategory] = useState('');
     const [image, setImage] = useState(null);
@@ -52,6 +47,7 @@ const Medics = () => {
     const [dateIsValid, setDateIsValid] = useState(true);
     const [id, setId] = useState('');
     const [isMedic, setIsMedic] = useState(true);
+    const [isTitleWrong, setIsTitleWrong] = useState(false);
 
     const [action, setAction] = useState('add');
     //image related
@@ -113,8 +109,14 @@ const Medics = () => {
     }
   
     const onchange = (e) => {
+      if(isMedic){
       if(e.target.name === 'title'){
         setTitle(e.target.value);
+        if(e.target.value.length < 3) {
+          setIsTitleWrong(true);
+      } else {
+          setIsTitleWrong(false);
+      }
       } else if(e.target.name === 'type'){
         setType(e.target.value);
       } else if(e.target.name === 'category'){
@@ -122,20 +124,40 @@ const Medics = () => {
       } else if(e.target.name === 'date'){
         setDate(e.target.value);
         let now = moment(new Date()).format('YYYY-MM-DD');
+<<<<<<< HEAD
         let days = moment(now).add(30, 'days')
         // console.log(moment(days).isBefore(e.target.value));
         // console.log(moment(now).isBefore(e.target.value));
+=======
+        let days = moment(now).add(10, 'days')
+>>>>>>> 4b746896b37bbc0b1f84b220aac61272c50a3b83
         setDateIsValid(moment(days).isBefore(e.target.value)); 
       } else if (e.target.name === 'form') {
         setForm(e.target.value);
       }
   
     }
-    
+    else{
+      if(e.target.name === 'title'){
+        setTitle(e.target.value);
+        if(e.target.value.length < 3) {
+          setIsTitleWrong(true);
+      } else {
+          setIsTitleWrong(false);
+      }
+      } else if(e.target.name === 'type'){
+        setType(e.target.value);
+      } else if(e.target.name === 'category'){
+        setCategory(e.target.value);
+      } 
+  
+    }
+  } 
     const update = (item) => {
       console.log('====================================');
       console.log(item);
       console.log('====================================');
+
       setTitle(item.title);
       setType(item.type);
       setCategory(item.category);
@@ -145,7 +167,7 @@ const Medics = () => {
       setForm(item.form);
       setId(item._id);
       setAction('update');
-  
+      
       openModal();
     }
 
@@ -190,6 +212,7 @@ const Medics = () => {
         // alert('data isnt vali');
         return;
       }
+<<<<<<< HEAD
       if (isMedic) {
         if (category === '' || form === '' || !File) {
           swal(
@@ -211,18 +234,83 @@ const Medics = () => {
             return;
           }
       }
+=======
+      
+>>>>>>> 4b746896b37bbc0b1f84b220aac61272c50a3b83
              
       const formData = new FormData();
-      if(File) {
-        // formData.append("image", previewUrl);
-        formData.append("image", File);
-      } 
+     
+      if((!image)&&(!File)) {
+        swal(
+          "Erreur!",
+          "Il faut choisir l'image du produit",
+          "error"
+        );
+        // alert('data isnt vali');
+        return;
+      }else{
+            formData.append("image", File);
+      }
+      if(!type){
+      swal(
+        "Erreur!",
+        "Il faut choisir le type du produit",
+        "error"
+      );
+      // alert('data isnt vali');
+      return;
+    }else{
       formData.append('type', type);
+    }
+    if(!category){
+      swal(
+        "Erreur!",
+        "Il faut choisir la catégorie du produit",
+        "error"
+      );
+      // alert('data isnt vali');
+      return;
+    }else{
       formData.append('category', category);
+    }
+    if(isMedic){
+    if(!form){
+      swal(
+        "Erreur!",
+        "Il faut choisir la forme du produit",
+        "error"
+      );
+      // alert('data isnt vali');
+      return;
+    }else{
       formData.append('forme', form);
+    }
+  }    
+  if(isMedic) {
       formData.append('deadline', date);
+}
+      if(isTitleWrong){
+        swal(
+          "Erreur!",
+          "Le nom doit etre supérieur à 3 caractères",
+          "error"
+        );
+        // alert('data isnt vali');
+        return;
+      }else{
       formData.append('title', title);
+      }
+      if(qte<1){
+        swal(
+          "Erreur!",
+          "La quantité doit etre supérieur à 1",
+          "error"
+        );
+        // alert('data isnt vali');
+        return;
+      }else{
       formData.append('qte', qte);
+      }
       formData.append('status', 1);
       formData.append('userid', user._id);
       
@@ -448,7 +536,7 @@ const Medics = () => {
                 onChange={() => {setIsMedic(false); setType('Produit Paramedical')}}
                 // onChange={() => console.log('true')}
               />
-              <label htmlFor="pamedic" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">roduit Paramedical</label>
+              <label htmlFor="pamedic" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Produit Paramedical</label>
             </div>
           </div>
           <div className="grid gap-6 mb-6 lg:grid-cols-2 items-end">
@@ -527,12 +615,15 @@ const Medics = () => {
                 type="text" 
                 id="title" 
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                placeholder="Title"
+                placeholder="Nom"
                 name='title' 
                 value={title}
                 onChange={(e) => onchange(e)}
                 required  
               />
+              {isTitleWrong ?
+                            <small className=" text-red-600 m-0 p-0" style={{fontSize: 12}}>Le nom doit etre supérieur à 3 caractères</small>
+                        : null }
             </div>
             <div>
                 
