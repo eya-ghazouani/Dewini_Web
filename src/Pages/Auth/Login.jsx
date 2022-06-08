@@ -21,9 +21,17 @@ const Login = () => {
     let url = `http://localhost:4000/user/login/`;
     let result = await axios.post(url, {email: email, password: pass});
     
-    console.log(result);
+    console.log(result.data.data);
 
     if (result.data.success === true) {
+      if (!result.data.data.role || result.data.data.role === 'user') {
+        return swal(
+          "Error!",
+          "vous etes pas authorizer",
+          "error"
+        );
+      }
+      
       swal(
         "Success!",
         result.data.message,

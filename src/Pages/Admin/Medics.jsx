@@ -35,6 +35,7 @@ const Medics = () => {
     const [filterData, setfilterData] = useState([]);
     const [masterData, setmasterData] = useState([]);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [modalReserveIsOpen, setmodalReserveIsOpen] = useState(false);
     const [categories, setCategories] = useState([]);
 
     const [title, setTitle] = useState('');
@@ -45,8 +46,9 @@ const Medics = () => {
     const [qte, setQte] = useState(1);
     const [date, setDate] = useState('');
     const [dateIsValid, setDateIsValid] = useState(true);
-    const [id, setId] = useState('');
     const [isMedic, setIsMedic] = useState(true);
+    const [id, setId] = useState('');
+    const [idMedic, setIdMedic] = useState('');
     const [isTitleWrong, setIsTitleWrong] = useState(false);
 
     const [action, setAction] = useState('add');
@@ -95,17 +97,20 @@ const Medics = () => {
     function closeModal() {
       setIsOpen(false);
       setTitle('');
-      setType('');
+      setType('Medicament');
+      setIsMedic(true)
       setCategory('');
       setForm('');
       setDate('');
       setQte(1);
       setImage(null);
       setId('');
+      setIdMedic('');
       setFile(null);
       setPreviewUrl(null);
       setIsValid(false);
       setAction('add');
+      setmodalReserveIsOpen(false);
     }
   
     const onchange = (e) => {
@@ -124,13 +129,11 @@ const Medics = () => {
       } else if(e.target.name === 'date'){
         setDate(e.target.value);
         let now = moment(new Date()).format('YYYY-MM-DD');
-<<<<<<< HEAD
         let days = moment(now).add(30, 'days')
         // console.log(moment(days).isBefore(e.target.value));
         // console.log(moment(now).isBefore(e.target.value));
-=======
-        let days = moment(now).add(10, 'days')
->>>>>>> 4b746896b37bbc0b1f84b220aac61272c50a3b83
+
+        // let days = moment(now).add(10, 'days')
         setDateIsValid(moment(days).isBefore(e.target.value)); 
       } else if (e.target.name === 'form') {
         setForm(e.target.value);
@@ -158,13 +161,19 @@ const Medics = () => {
       console.log(item);
       console.log('====================================');
 
+      console.log(item.forme);
       setTitle(item.title);
+      if(item.type === 'Medicament') {
+        setIsMedic(true);
+      } else {
+        setIsMedic(false);
+      }
       setType(item.type);
       setCategory(item.category);
       setDate(item.deadline);
       setImage(item.image);
       setQte(item.qte);
-      setForm(item.form);
+      setForm(item.forme);
       setId(item._id);
       setAction('update');
       
@@ -201,6 +210,61 @@ const Medics = () => {
       /* props.onInput(props.id, pickedFile, fileIsValid); */
     };
       
+    const ReserveAdmin = async (e) => {
+
+      e.preventDefault();
+      const formData = new FormData();
+     
+      if((!image)&&(!File)) {
+        swal(
+          "Erreur!",
+          "Il faut choisir l'image du'ordonnance",
+          "error"
+        );
+        // alert('data isnt vali');
+        return;
+      }else{
+          formData.append("ordonnance", File);
+      }
+
+      if(qte<1){
+        swal(
+          "Erreur!",
+          "La quantité doit etre supérieur à 1",
+          "error"
+        );
+        // alert('data isnt vali');
+        return;
+      }else{
+      formData.append('qte_reserv', qte);
+    }
+    formData.append('idproduit', idMedic);
+    formData.append('iduser', user._id);
+    formData.append('confirm', true);
+      let url, result;
+
+      url = `http://localhost:4000/reservation/reserver`;
+
+      result = await axios.post(url, formData);
+
+      if (result.data.success ) {
+        swal(
+          "Success!",
+          result.data.message,
+          "success"
+        );
+        fetchdata();
+        closeModal();
+      } else {
+        swal(
+          "Error!",
+          result.data.message,
+          "error"
+        );
+      }
+
+    }
+
     const submit = async (e) => {
       e.preventDefault();
       if (!dateIsValid) {
@@ -212,31 +276,7 @@ const Medics = () => {
         // alert('data isnt vali');
         return;
       }
-<<<<<<< HEAD
-      if (isMedic) {
-        if (category === '' || form === '' || !File) {
-          swal(
-            "Error!",
-            'Remplir tt la forme',
-            "error"
-          );
-          // alert('data isnt vali');
-          return;
-        }
-      } else {
-        if (category === '' || !File) {
-          swal(
-            "Error!",
-            'Remplir tt la forme',
-            "error"
-            );
-            // alert('data isnt vali');
-            return;
-          }
-      }
-=======
       
->>>>>>> 4b746896b37bbc0b1f84b220aac61272c50a3b83
              
       const formData = new FormData();
      
@@ -251,6 +291,7 @@ const Medics = () => {
       }else{
             formData.append("image", File);
       }
+
       if(!type){
       swal(
         "Erreur!",
@@ -288,7 +329,7 @@ const Medics = () => {
   }    
   if(isMedic) {
       formData.append('deadline', date);
-}
+  }
       if(isTitleWrong){
         swal(
           "Erreur!",
@@ -406,7 +447,7 @@ const Medics = () => {
     </div>
 
       
-    <div className="w-fll grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 mt-5 pb-5 mx-5">
+    <div className="w-fll grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-5 mt-5 pb-5 mx-5">
       {filterData.slice(0).reverse().map(({_id, title, type, category, deadline, qte, image, forme}, idx) => {
         let categor = categories.find(({_id}) => _id === category );
         return (
@@ -421,10 +462,10 @@ const Medics = () => {
                 <div className="w-full flex flex-row justify-between my-1">
                     <p className='text-xl font-bold '>{title}</p>
                     <div className="w-fit flex flex-row items-center space-x-2">
-                    <p className='ml-2 text-base font-semibold  '>{qte}</p>
-                    {forme &&
-                      <p className='ml-2 text-base font-semibold  '>{forme}(s)</p>
-                    }
+                      <p className='ml-2 text-base font-semibold  '>{qte}</p>
+                      {forme &&
+                        <p className='ml-2 text-base font-semibold  '>{forme}(s)</p>
+                      }
                     </div>
                 </div>
 
@@ -449,22 +490,36 @@ const Medics = () => {
                     <div className="w-full border bg-gray-300" />
                 </div>
 
-                <div className="w-full flex flex-row mt-1">
-                    <div className="w-1/2 flex justify-center">
+                <div className="w-full flex flex-row justify-evenly  mt-1">
+
+                    <div className=" flex justify-center">
                         <button 
-                            className="relative w-fit inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
-                            onClick={() => update({_id, title, type, category, deadline, qte, date, image})}
+                            className="relative w-fit inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded-md group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none p-0.5 focus:ring-green-200 dark:focus:ring-green-800"
+                            onClick={() => update({_id, title, type, category, forme, deadline, qte, date, image})}
                         >
-                            <span className="relative  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+                            <span className="relative rounded-md  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
                                 Update
                             </span>
                         </button>
                     </div>
-                    <div className="w-1/2 flex justify-center ">
+
+                    <div className=" flex justify-center">
+                        <button 
+                            className="relative inline-flex items-center justify-center p-0.5  overflow-hidden text-sm font-medium text-gray-900 rounded-md group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800"
+                            onClick={() => {setmodalReserveIsOpen(true); setIdMedic(_id)}}
+                        >
+                            <span className="relative rounded-md  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+                                Reserver
+                            </span>
+                        </button>
+                    </div>
+
+
+                    <div className=" flex justify-center ">
                     
 
                         <button 
-                            className="relative inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white "
+                            className="relative inline-flex items-center p-0.5 justify-center overflow-hidden text-sm font-medium text-gray-900 rounded-md group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white "
                             // onClick={() => delete_medic(_id)}
                             onClick={async() => {swal({
                                 title: "Are you sure?",
@@ -485,13 +540,14 @@ const Medics = () => {
                             }}
                         >
                             <span 
-                                className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900  group-hover:bg-opacity-0"
+                                className="relative rounded-md px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900  group-hover:bg-opacity-0"
                                 
                             >
                                 Delete
                             </span>
                         </button>
                     </div>
+
                 </div>
 
 
@@ -730,7 +786,100 @@ const Medics = () => {
         </form>
       </div>
     </Modal>
-      
+
+
+    <Modal
+      isOpen={modalReserveIsOpen}
+      onAfterOpen={afterOpenModal}
+      onRequestClose={closeModal}
+      style={customStyles}
+      contentLabel="Example Modal"
+    >
+
+      <div className="w-full h-full overflow-auto">
+        <form onSubmit={ReserveAdmin} >
+
+          <div className="grid gap-6 mb-6 lg:grid-cols-2 items-end">
+
+              <div className="w-full flex flex-row justify-between items-end">
+
+                  {previewUrl ?
+
+                    <div className="w-1/3 mb-5">
+
+                      <img 
+                          src={previewUrl}
+                          // src={`https://i.pinimg.com/564x/22/7d/73/227d73d1ca2d45a6b4f196dc916b54a3.jpg`}
+                          className='rounded w-full h-auto'
+                          alt='image'
+                      />
+                    </div>
+                  : image ?
+                      <div className="w-1/3  mb-5">
+
+                          <img 
+                          // src={previewUrl}
+                          src={`http://localhost:4000/uploads/images/${image}`}
+                          className='rounded w-full h-auto'
+                          alt='image'
+                          />
+                      </div> 
+                      : null 
+                  
+                      }
+
+                      <div className={`${previewUrl || image ? 'w-2/3 ' : 'w-full'} transition-all duration-700`}>
+                          <input 
+                          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600  dark:placeholder-gray-400" 
+                          aria-describedby="user_avatar_help" 
+                          type="file" 
+                          accept=".jpg,.png,.jpeg"
+                          ref={filePickerRef}
+                          onChange={pickedHandler}
+                          // onChange={(e) => setImage(URL.createObjectURL(e.target.files[0]))}
+                          // onChange={(e) => setImage(e.target.files[0])}
+                          />
+                      </div>
+                  </div>
+
+              <div className='w-full flex flex-row justify-evenly h-fit'>
+                  <div 
+                  className='w-1/4 rounded-lg border flex justify-center items-center cursor-pointer hover:shadow'
+                  onClick={()=> setQte(qte - 1)}
+                  >
+                    <TiMinus className='text-gray-600' size={20} />
+                  </div>
+                  <input 
+                  type="number" 
+                  id="qte" 
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/4 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-blue-500" 
+                  // placeholder="Nom"
+                  name='qte' 
+                  value={qte}
+                  onChange={(e) => onchange(e)}
+                      
+                  />
+                  <div 
+                  className='w-1/4 rounded-lg border flex justify-center items-center cursor-pointer hover:shadow'
+                  onClick={()=> setQte(qte + 1)}
+                  >
+                  <BsPlusLg className='text-gray-600' size={20} />
+                  </div>
+                </div>
+                  
+            </div>
+
+          <button 
+            className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+            type='submit'
+          >
+            <span className="relative px-2 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded group-hover:bg-opacity-0">
+              Submit
+            </span>
+          </button>
+        </form>
+      </div>
+    </Modal>
       
     </div>
   )

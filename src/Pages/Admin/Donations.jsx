@@ -38,6 +38,7 @@ const Donations = () => {
     const [search, setSearch] = useState('');
     const [users, setUsers] = useState([]);
     const [medics, setMedics] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [filterData, setfilterData] = useState([]);
     const [masterData, setmasterData] = useState([]);
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -79,10 +80,19 @@ const Donations = () => {
     }, [File]);
 
     const fetchdata = async () => {
-        const response = await axios.get(`${path}produit/donations`);
-        // console.log(response.data);
-        setfilterData(response.data.data);
-        setmasterData(response.data.data);
+      const response = await axios.get(`${path}don`);
+      // console.log(response.data);
+      setfilterData(response.data.data.slice(0).reverse());
+      setmasterData(response.data.data.slice(0).reverse());
+      
+      const result = await axios.get(`${path}produit`);
+      // console.log(response.data);
+      setMedics(result.data.data.slice(0).reverse());
+      
+
+      const categ = await axios.get(`${path}categorie`);
+      // console.log(response.data);
+      setCategories(categ.data.data.slice(0).reverse());
     }
 
     useEffect(() => {
@@ -159,12 +169,13 @@ const Donations = () => {
 
         
              
-      let url = `http://localhost:4000/produit/donation/${id}`;
-      let result = await axios.patch(url, {status: status});
+      let url = `http://localhost:4000/don/reponse/${id}`;
+      let result = await axios.patch(url, {confirm: status});
       
       console.log(result);
 
       if (result.data.success === true) {
+        
         swal(
           "Success!",
           result.data.message,
@@ -206,34 +217,56 @@ const Donations = () => {
       </div>
 
       
-      <div className="w-fll grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 mt-5 pb-5 mx-5">
-        {filterData.slice(0).reverse().map(({_id, title, type, category, deadline, qte, image, userid}, idx) => {
-            let user  = users.find(({_id}) => _id === userid);
+      <div className="w-fll grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  gap-5 mt-5 pb-5 mx-5">
+        {filterData.slice(0).reverse().map(({_id, qte_don, date_don, confirm, iduser, idproduit}, idx) => {
+            let user  = users.find(({_id}) => _id === iduser);
+            let medic  = medics.find(({_id}) => _id === idproduit);
+            let categ  = categories.find(({_id}) => _id === medic.category);
 
             return (
+              // <div />
                 <div key={idx} className=" rounded bg-white shadow p-2">
                   <div className="w-full flex justify-center">
+                    {medic && 
                       <img
-                          src={`http://localhost:4000/uploads/images/${image}`}
+                      src={`http://localhost:4000/uploads/images/${medic.image}`}
                           className='w-auto h-48 rounded  '
                           alt='User avatar'
                       />
+                    }
                   </div>
-                  <div className="w-full flex flex-row justify-between my-1">
-                      <p className='text-xl font-bold '>{title}</p>
-                      <p className='ml-2 text-sm  '>{qte}</p>
-                  </div>
+                    <div className="w-full flex flex-row justify-between my-1">
+                     {categ && 
+                        <p className='text-xl font-bold '>{categ.nom}</p>
+                      }
+                      {medic &&
+                        <div className="w-fit flex flex-row items-center space-x-2">
+                          <p className='ml-2 text-base font-semibold  '>{medic.qte}</p>
+                          <p className='ml-2 text-base font-semibold  '>{medic.forme}(s)</p>
+                        </div>
+                      }
+                      {/* {medic && 
+                        <p className='ml-2 text-sm  '>{medic.qte}</p>
+                      } */}
+                    </div>
 
                   <div className="w-full flex flex-row items-center my-1">
-                      <p className='ml-2 text-sm  '>{type}</p>
+                    {medic && 
+                      <p className='ml-2 text-sm  '>{medic.type}</p>
+                    }
 
                   </div>
-                  <div className="w-full flex flex-row flex-wrap justify-between items-center my-1">
-                      <p className='ml-2 text-sm  '>{category}</p>
+                  {/* <div className="w-full flex flex-row flex-wrap justify-between items-center my-1">
+                    {medic && 
+                      <p className='ml-2 text-sm  '>{medic.forme}</p>
+                    }
 
-                  </div>
+                  </div> */}
                   <div className="w-full flex flex-row justify-end mb-1">
-                      <p className='ml-2 text-sm text-red-800 '>{deadline}</p>
+                    {medic && 
+                  
+                      <p className='ml-2 text-sm text-red-800 '>{medic.deadline}</p>
+                    }
 
                   </div>
 
@@ -242,44 +275,53 @@ const Donations = () => {
                   </div>
 
                   <div className="w-full flex flex-row mt-1">
-                      <div className="w-1/2 flex justify-center">
-                          <button 
-                              className="relative w-fit inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
-                              onClick={() => swal("Are u sure to accept this Donation ?")
-                              .then((value) => {
-                                  if(value === true) {
-                                      submit(1, _id);
-                                  }
-                              })
-                            }
-                          >
-                              <span className="relative  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-                                  Accept
-                              </span>
-                          </button>
-                      </div>
-                      <div className="w-1/2 flex justify-center ">
-                      
-
-                          <button 
-                              className="relative inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white "
-                              // onClick={() => delete_medic(_id)}
-                              onClick={() => swal("Are u sure to Refuse this Donation ?")
-                              .then((value) => {
-                                  if(value === true) {
-                                      submit(2, _id);
-                                  }
-                              })
-                            }
-                          >
-                              <span 
-                                  className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900  group-hover:bg-opacity-0"
-                                  
+                    {confirm !== null ? confirm ?
+                      <p className='ml-2 text-lg text-green-800 '>Accepted</p>
+                    :
+                      <p className='ml-2 text-lg text-green-800 '>Accepted</p>
+                    :
+                    
+                        <>
+                          <div className="w-1/2 flex justify-center">
+                              <button 
+                                  className="relative w-fit inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded-md p-0.5 group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+                                  onClick={() => swal("Are u sure to accept this Donation ?")
+                                  .then((value) => {
+                                      if(value === true) {
+                                          submit(true, _id);
+                                      }
+                                  })
+                                }
                               >
-                                  Refuse
-                              </span>
-                          </button>
-                      </div>
+                                  <span className="relative rounded-md px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
+                                      Accept
+                                  </span>
+                              </button>
+                          </div>
+                          <div className="w-1/2 flex justify-center ">
+                          
+
+                              <button 
+                                  className="relative inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded-md p-0.5 group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white "
+                                  // onClick={() => delete_medic(_id)}
+                                  onClick={() => swal("Are u sure to Refuse this Donation ?")
+                                  .then((value) => {
+                                      if(value === true) {
+                                          submit(false, _id);
+                                      }
+                                  })
+                                }
+                              >
+                                  <span 
+                                      className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+                                      
+                                  >
+                                      Refuse
+                                  </span>
+                              </button>
+                          </div>
+                        </>
+                    }
                   </div>
 
 
