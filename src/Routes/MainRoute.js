@@ -15,7 +15,7 @@ const MainRoute = () => {
   return (
     <Routes>
         <Route 
-          path='/' 
+          path='/'  
           element={
             <UserCheck>
               <Dashboard />

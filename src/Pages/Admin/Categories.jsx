@@ -46,6 +46,7 @@ const Categories = () => {
     const [File, setFile] = useState();
     const [previewUrl, setPreviewUrl] = useState();
     const [isValid, setIsValid] = useState(false);
+    const [isNomWrong, setIsNomWrong] = useState(false);
 
     const filePickerRef = useRef();
     let subtitle;
@@ -100,6 +101,11 @@ const Categories = () => {
     const onchange = (e) => {
       if(e.target.name === 'nom'){
         setNom(e.target.value);
+        if(e.target.value.length < 3) {
+          setIsNomWrong(true);
+      } else {
+          setIsNomWrong(false);
+      }
       }
   
     }
@@ -155,8 +161,17 @@ const Categories = () => {
         // formData.append("image", previewUrl);
         formData.append("image", File);
       } 
+      if(isNomWrong){
+        swal(
+            "Erreur!",
+            'Le nom doit etre supérieur à 3 caractères ',
+            "error"
+          );
+          // alert('data isnt vali');
+          return;
+    }else{
       formData.append('nom', nom);
- 
+    }
       let options, url, result;
       if(action === 'add') {
         url = `http://localhost:4000/categorie/add`;
@@ -380,6 +395,9 @@ const Categories = () => {
                             onChange={(e) => onchange(e)}
                             required  
                         />
+                        {isNomWrong ?
+                            <small className=" text-red-600 m-0 p-0" style={{fontSize: 12}}>Le nom doit etre supérieur à 3 caractères</small>
+                        : null }
                     </div>
                 </div>
 
