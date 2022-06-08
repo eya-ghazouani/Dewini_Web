@@ -12,10 +12,10 @@ import Maps from '../Components/Maps';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
-    users: 5,
-    medics: 3,
-    paramedics: 1,
-    reservs: 1
+    users: 0,
+    medics: 0,
+    paramedics: 0,
+    reservs: 0
   });
   const [lines, setLines] = useState([]);
 
@@ -93,7 +93,7 @@ const Dashboard = () => {
       </div>
 
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
-        <div className="w-full h-full rounded-lg shadow-xl bg-white p-4">
+        <div className="w-full h-96 rounded-lg shadow-xl bg-white p-4">
           <Maps />
         </div>
         <div className="w-full h-96 rounded-lg shadow-xl bg-white p-4">

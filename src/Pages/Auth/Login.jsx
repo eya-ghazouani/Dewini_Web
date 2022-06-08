@@ -4,6 +4,7 @@ import swal from 'sweetalert';
 import Cookies from 'universal-cookie';
 import { useNavigate } from 'react-router-dom';
 
+import socket from "../../utils/Socket";
 import {FaRegEnvelope} from'react-icons/fa'
 import {MdLockOutline} from'react-icons/md'
 
@@ -30,6 +31,7 @@ const Login = () => {
       );
       let json = JSON.stringify(result.data.data);
       cookies.set('user', json );
+      socket.emit('log_in', result.data.data._id);
       setEmail('');
       setPass('');
       navigate('/');

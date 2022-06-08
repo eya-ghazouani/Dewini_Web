@@ -55,7 +55,7 @@ const Medics = () => {
 
     const [action, setAction] = useState('add');
     //image related
-    const [File, setFile] = useState();
+    const [File, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState();
     const [isValid, setIsValid] = useState(false);
 
@@ -122,7 +122,7 @@ const Medics = () => {
       } else if(e.target.name === 'date'){
         setDate(e.target.value);
         let now = moment(new Date()).format('YYYY-MM-DD');
-        let days = moment(now).add(10, 'days')
+        let days = moment(now).add(30, 'days')
         // console.log(moment(days).isBefore(e.target.value));
         // console.log(moment(now).isBefore(e.target.value));
         setDateIsValid(moment(days).isBefore(e.target.value)); 
@@ -189,6 +189,27 @@ const Medics = () => {
         );
         // alert('data isnt vali');
         return;
+      }
+      if (isMedic) {
+        if (category === '' || form === '' || !File) {
+          swal(
+            "Error!",
+            'Remplir tt la forme',
+            "error"
+          );
+          // alert('data isnt vali');
+          return;
+        }
+      } else {
+        if (category === '' || !File) {
+          swal(
+            "Error!",
+            'Remplir tt la forme',
+            "error"
+            );
+            // alert('data isnt vali');
+            return;
+          }
       }
              
       const formData = new FormData();
