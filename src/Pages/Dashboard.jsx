@@ -16,7 +16,8 @@ const Dashboard = () => {
     users: 0,
     medics: 0,
     paramedics: 0,
-    reservs: 0
+    reservs: 0,
+    dons:0
   });
   const [lines, setLines] = useState([]);
 
@@ -55,7 +56,7 @@ const Dashboard = () => {
       <div className="w-full p-4 bg-white shadow-xl rounded-lg ">
         <p className="text-xl font-bold text-gray-600">Les dons</p>
         <div className="w-full flex flex-row justify-between mt-4 px-4 ">
-          <p className="text-xl font-bold text-gray-600">35</p>
+          <p className="text-xl font-bold text-gray-600">{stats.dons}</p>
           <FaHandHoldingMedical className='text-gray-600' size={35} />
         </div>
 

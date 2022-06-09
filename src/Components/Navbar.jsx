@@ -46,7 +46,7 @@ const Navbar = () => {
         </div>
 
         <div className='w-4/5 flex justify-end items-center' >
-          <div className='w-5/6 flex justify-end pr-5  space-x-4 items-center'>
+          <div className='w-5/7 flex justify-end pr-5  space-x-4 items-center'>
             {isMobile ? null :
               <>
                 <Link className="font-semibold hover:text-cyan-700 " to='/'>Tableau de bord</Link>
@@ -62,7 +62,7 @@ const Navbar = () => {
                 <img
                   // src='https://i.pinimg.com/750x/2b/6d/f0/2b6df004a324e4f303154d5e151753c7.jpg'
                   src={`${path}uploads/images/${user.avatar}` }
-                  className='w-10 h-10 bg-blue-900 rounded-full ml-8  '
+                  className='w-10 h-10  rounded-full ml-8  '
                   alt='avatar'
                 />
               }
@@ -74,7 +74,7 @@ const Navbar = () => {
                 cookies.remove('user');
                 navigate('/login');
               }}
-            >Logout</button>
+            >Déconnexion</button>
 
           </div>
         </div>

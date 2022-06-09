@@ -120,7 +120,7 @@ const Login = () => {
                   </div>
                   <h2 className='text-3xl font-bold mb-2'>Bienvenue...!</h2>
                   <div className='border-2 w-10 border-white inline-block mb-2'></div>
-                  <p className='mb-8'>Remplissez vos informations personnelles et commencez à nous suivre...</p>
+                  <p className='mb-8'>Bienvenue chez Dewini...</p>
                 </div>
                 {/* <a href="#" className='border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500'>S'inscrire</a> */}
               </div>

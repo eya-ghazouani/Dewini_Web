@@ -190,7 +190,7 @@ const Categories = () => {
       // console.log(result);
       if (result.data.success === true) {
         swal(
-          "Success!",
+          "Succés!",
           result.data.message,
           "success"
         );
@@ -248,7 +248,7 @@ const Categories = () => {
                   <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                       <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                   </div>
-                  <input type="search" className="pl-10 w-full appearance-none block px-2 py-1 bg-gray-200 text-gray-700 border rounded focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Search" 
+                  <input type="search" className="pl-10 w-full appearance-none block px-2 py-1 bg-gray-200 text-gray-700 border rounded focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Chercher" 
                   onChange={(e) => searchFilter(e.target.value)}
                   />
               
@@ -257,7 +257,7 @@ const Categories = () => {
               onClick={openModal}
               >
                   <span className="relative px-2 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                      Add Categorie
+                      Ajouter Catégorie
                   </span>
               </button>
           </div>
@@ -292,7 +292,7 @@ const Categories = () => {
                               onClick={() => update({_id, nom, image})}
                           >
                               <span className="relative  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0 rounded-md">
-                                  Update
+                                  Modifier
                               </span>
                           </button>
                       </div>
@@ -303,8 +303,8 @@ const Categories = () => {
                               className="relative inline-flex items-center justify-center overflow-hidden text-sm font-medium text-gray-900 rounded-md group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white p-0.5"
                               // onClick={() => delete_medic(_id)}
                               onClick={async() => {swal({
-                                  title: "Are you sure?",
-                                  text: "Once deleted, you will not be able to recover this Categorie!",
+                                  title: "Vous etes sur?",
+                                  text: "Une fois supprimé vous ne pouvez plus récupérer cette catégorie !",
                                   icon: "warning",
                                   buttons: true,
                                   dangerMode: true,
@@ -314,7 +314,7 @@ const Categories = () => {
                       
                                       delete_medic(_id);
                                   } else {
-                                  swal("Categorie is safe!");
+                                  swal("Categorie enregistrée!");
                                   }
                               });
                               
@@ -324,7 +324,7 @@ const Categories = () => {
                                   className="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md  group-hover:bg-opacity-0"
                                   
                               >
-                                  Delete
+                                  Supprimer
                               </span>
                           </button>
                       </div>
@@ -406,7 +406,7 @@ const Categories = () => {
                     type='submit'
                 >
                     <span className="relative px-2 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded group-hover:bg-opacity-0">
-                Submit
+                Enregistrer
                     </span>
                 </button>
             </form>

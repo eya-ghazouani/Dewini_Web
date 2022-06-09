@@ -423,14 +423,14 @@ const Medics = () => {
     <div className="w-full px-4 ">
       <div className="w-full rounded bg-white shadow flex flex-row justify-between py-2 px-4">
           <div className="flex flex-row">
-              <p  className='text-lg font-semibold cursor-pointer mr-1' >Home  </p><p className='text-lg' >/ Medicines</p>
+              <p className='text-lg' >/Produits</p>
           </div>
           <div className='flex flex-row items-center'>
               <div className=" relative">
                   <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                       <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                   </div>
-                  <input type="search" className="pl-10 w-full appearance-none block px-2 py-1 bg-gray-200 text-gray-700 border rounded focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Search" 
+                  <input type="search" className="pl-10 w-full appearance-none block px-2 py-1 bg-gray-200 text-gray-700 border rounded focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Chercher" 
                   onChange={(e) => searchFilter(e.target.value)}
                   />
               
@@ -439,7 +439,7 @@ const Medics = () => {
               onClick={openModal}
               >
                   <span className="relative px-2 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                      Add Medics
+                      Ajouter produit
                   </span>
               </button>
           </div>
@@ -498,7 +498,7 @@ const Medics = () => {
                             onClick={() => update({_id, title, type, category, forme, deadline, qte, date, image})}
                         >
                             <span className="relative rounded-md  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-                                Update
+                                Modifier
                             </span>
                         </button>
                     </div>
@@ -509,7 +509,7 @@ const Medics = () => {
                             onClick={() => {setmodalReserveIsOpen(true); setIdMedic(_id)}}
                         >
                             <span className="relative rounded-md  px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 group-hover:bg-opacity-0">
-                                Reserver
+                                Réserver
                             </span>
                         </button>
                     </div>
@@ -522,8 +522,8 @@ const Medics = () => {
                             className="relative inline-flex items-center p-0.5 justify-center overflow-hidden text-sm font-medium text-gray-900 rounded-md group bg-gradient-to-br from-red-300 via-red-400 to-pink-500 group-hover:from-red-300 group-hover:via-red-400 group-hover:to-pink-500 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-500 hover:text-white "
                             // onClick={() => delete_medic(_id)}
                             onClick={async() => {swal({
-                                title: "Are you sure?",
-                                text: "Once deleted, you will not be able to recover this Medicine!",
+                                title: "Vous etes sur?",
+                                text: "Une fois supprimé vous ne pouvez plus récupérer ce produit !",
                                 icon: "warning",
                                 buttons: true,
                                 dangerMode: true,
@@ -533,7 +533,7 @@ const Medics = () => {
                     
                                     delete_medic(_id);
                                 } else {
-                                swal("Medicine is safe!");
+                                swal("Produit enregistrée!");
                                 }
                             });
                             
@@ -543,7 +543,7 @@ const Medics = () => {
                                 className="relative rounded-md px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900  group-hover:bg-opacity-0"
                                 
                             >
-                                Delete
+                                Supprimer
                             </span>
                         </button>
                     </div>
@@ -780,7 +780,7 @@ const Medics = () => {
             type='submit'
           >
             <span className="relative px-2 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded group-hover:bg-opacity-0">
-              Submit
+              Enregistrer
             </span>
           </button>
         </form>
@@ -874,7 +874,7 @@ const Medics = () => {
             type='submit'
           >
             <span className="relative px-2 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded group-hover:bg-opacity-0">
-              Submit
+              Enregistrer
             </span>
           </button>
         </form>
